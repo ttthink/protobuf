@@ -56,6 +56,7 @@ cc_library(
     ],
     copts = COPTS,
     includes = ["src/"],
+    hdrs = glob(["src/google/protobuf/**/*.h"]),
     linkopts = LINK_OPTS,
     visibility = ["//visibility:public"],
 )
@@ -117,6 +118,7 @@ cc_library(
         "src/google/protobuf/wire_format.cc",
         "src/google/protobuf/wrappers.pb.cc",
     ],
+    hdrs = glob(["src/**/*.h"]),
     copts = COPTS,
     includes = ["src/"],
     linkopts = LINK_OPTS,
@@ -157,6 +159,7 @@ cc_proto_library(
     internal_bootstrap_hack = 1,
     protoc = ":protoc",
     default_runtime = ":protobuf",
+    visibility = ["//visibility:public"],
 )
 
 ################################################################################
@@ -192,11 +195,11 @@ cc_library(
         "src/google/protobuf/compiler/csharp/csharp_message.cc",
         "src/google/protobuf/compiler/csharp/csharp_message_field.cc",
         "src/google/protobuf/compiler/csharp/csharp_primitive_field.cc",
+        "src/google/protobuf/compiler/csharp/csharp_reflection_class.cc",
         "src/google/protobuf/compiler/csharp/csharp_repeated_enum_field.cc",
         "src/google/protobuf/compiler/csharp/csharp_repeated_message_field.cc",
         "src/google/protobuf/compiler/csharp/csharp_repeated_primitive_field.cc",
         "src/google/protobuf/compiler/csharp/csharp_source_generator_base.cc",
-        "src/google/protobuf/compiler/csharp/csharp_umbrella_class.cc",
         "src/google/protobuf/compiler/csharp/csharp_wrapper_field.cc",
         "src/google/protobuf/compiler/java/java_context.cc",
         "src/google/protobuf/compiler/java/java_doc_comment.cc",

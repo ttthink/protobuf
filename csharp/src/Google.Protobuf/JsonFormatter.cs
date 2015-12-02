@@ -388,13 +388,12 @@ namespace Google.Protobuf
             // If it's the message form, we can extract the value first, which *will* be the (possibly boxed) native value,
             // and then proceed, writing it as if we were definitely in a field. (We never need to wrap it in an extra string...
             // WriteValue will do the right thing.)
-            // TODO: Detect this differently when we have dynamic messages.
-            if (descriptor.File == Int32Value.Descriptor.File)
+            if (descriptor.IsWrapperType)
             {
                 if (value is IMessage)
                 {
                     var message = (IMessage) value;
-                    value = message.Descriptor.Fields[Wrappers.WrapperValueFieldNumber].Accessor.GetValue(message);
+                    value = message.Descriptor.Fields[WrappersReflection.WrapperValueFieldNumber].Accessor.GetValue(message);
                 }
                 WriteValue(builder, value);
                 return;

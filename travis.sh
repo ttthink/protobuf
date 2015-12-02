@@ -47,6 +47,24 @@ build_csharp() {
   cd conformance && make test_csharp && cd ..
 }
 
+build_golang() {
+  # Go build needs `protoc`.
+  internal_build_cpp
+  # Add protoc to the path so that the examples build finds it.
+  export PATH="`pwd`/src:$PATH"
+
+  # Install Go and the Go protobuf compiler plugin.
+  sudo apt-get update -qq
+  sudo apt-get install -qq golang
+  export GOPATH="$HOME/gocode"
+  mkdir -p "$GOPATH/src/github.com/google"
+  ln -s "`pwd`" "$GOPATH/src/github.com/google/protobuf"
+  export PATH="$GOPATH/bin:$PATH"
+  go get github.com/golang/protobuf/protoc-gen-go
+
+  cd examples && make gotest && cd ..
+}
+
 use_java() {
   version=$1
   case "$version" in
@@ -136,8 +154,9 @@ internal_objectivec_common () {
   brew update
   brew outdated xctool || brew upgrade xctool
   # Reused the build script that takes care of configuring and ensuring things
-  # are up to date.
-  objectivec/DevTools/full_mac_build.sh --core-only --skip-xcode
+  # are up to date. Xcode and conformance tests will be directly invoked.
+  objectivec/DevTools/full_mac_build.sh \
+      --core-only --skip-xcode --skip-objc-conformance
 }
 
 internal_xctool_debug_and_release() {
@@ -178,6 +197,7 @@ build_objectivec_osx() {
     -scheme ProtocolBuffers \
     -destination "platform=OS X,arch=x86_64" \
     test
+  cd conformance && make test_objc && cd ..
 }
 
 build_python() {
